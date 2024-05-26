@@ -1,0 +1,51 @@
+{
+    "ipdata": {
+        "comment": "",
+        "enom": "CONV_CORE",
+        "ipid": "1000500B"
+    },
+    "memories": {
+        "cfgReg": {
+            "comment": "",
+            "enom": "CONFREG",
+            "size": "1",
+            "val": "5'b00100"
+        },
+        "memIn": [
+            {
+                "comment": "memory block for input values",
+                "enom": "MEM_Y",
+                "size": "32",
+                "val": "5'b00000"
+            }
+        ],
+        "memInStream": {
+        },
+        "memOut": [
+            {
+                "comment": "memory block for result values",
+                "enom": "MEM_Z",
+                "size": "64",
+                "val": "5'b00010"
+            }
+        ],
+        "memOutStream": {
+        }
+    },
+    "regs": {
+        "reg1": "",
+        "reg10": "",
+        "reg11": "",
+        "reg12": "",
+        "reg13": "",
+        "reg14": "",
+        "reg15": "",
+        "reg2": "",
+        "reg3": "",
+        "reg4": "",
+        "reg5": "",
+        "reg6": "",
+        "reg7": "",
+        "reg9": ""
+    }
+}

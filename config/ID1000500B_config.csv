@@ -1,0 +1,10 @@
+type,alphaID,numID,size,mode,description
+IPID,CONV_CORE,0x1000500B,,,
+CFG,MEM_Y,0b00000,32,W,memory block for input values
+CFG,MEM_Z,0b00010,64,R,memory block for result values
+CFG,AEM_Y,0b00001,1,W,Set Write Address Pointer of MEM_Y
+CFG,AEM_Z,0b00011,1,W,Set Read Address Pointer of MEM_Z
+CFG,CONFREG,0b00100,1,W,
+CFG,AONFREG,0b00101,1,W,Set Write Address of CONFREG
+CFG,STATUS,0b11110,1,B,IP status register
+CFG,IPID,0b11111,1,R,IP ID
