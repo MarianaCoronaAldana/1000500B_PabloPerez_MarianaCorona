@@ -16,6 +16,7 @@ class convolution:
         if self.__pyaip is None:
             logging.debug(error)
         ## Array of strings with information read
+        self.__pyaip.reset()
         self.dataRX = []
         ## IP Convolution IP-ID
         self.IPID = 0
@@ -29,7 +30,7 @@ class convolution:
     # @param Y    Array of data to put in memory Y
     def conv(self, memY):          
         # Enable interruptions
-        this.__enableINT()
+        self.__enableINT()
         # Write Conf Reg with size of memory Y
         self.__writeSizeY(len(memY))
         # Write memory: MEM_Y
@@ -37,15 +38,18 @@ class convolution:
         # Start IP
         self.__startIP()
         # Show status
-        this.__status()
+        self.__status()
+        # Clear Interrups
+        #self.__disableINT()
         # Wait for Done Flag
         self.__waitInt()
+        print('end waiting')
         # Read memory: MEM_Z
         memZ = self.__readData(64)
         # Clear flags
         self.__clearStatus()           
         # Show status
-        this.__status()
+        self.__status()
         
         return memZ
 
@@ -54,8 +58,11 @@ class convolution:
     # @param self Object pointer
     # @param sizeY size of memory Y
     def __writeSizeY(self, sizeY):
-        self.__pyaip.writeConfReg('CONFREG', sizeY, 1, 0)
-        logging.debug(f"Confreg setted to {sizeY}")        
+
+        parameter = []
+        parameter.append(sizeY)
+        self.__pyaip.writeConfReg('CONFREG', parameter, 1, 0)
+        logging.debug(f"Confreg setted to {sizeY}")
         
     ## Write data in the IP Convolution input memory
     #
@@ -71,6 +78,7 @@ class convolution:
     #
     # @param self Object pointer
     def __startIP(self):
+        print('startIP')
         self.__pyaip.start()
         logging.debug("Start sent")
     
@@ -78,9 +86,11 @@ class convolution:
     #
     # @param self Object pointer
     def __waitInt(self):
+        print('Waiting')
         waiting = True        
         while waiting:
             status = self.__pyaip.getStatus()
+            ##print('Status: ', status)
             logging.debug(f"status {status:08x}")            
             if status & 0x1:
                 waiting = False            
@@ -93,13 +103,14 @@ class convolution:
     def __readData(self, size):
         data = self.__pyaip.readMem('MEM_Z', size, 0)
         logging.debug("Data obtained from MemZ")
-        print(f'result Data: {[f"{x:08X}" for x in result]}\n')
+        print(f'result Data: {[f"{x:08X}" for x in data]}\n')
         return data   
     
     ## Show IP Convolution STATUS
     #
     # @param self Object pointer
     def __status(self):
+        print('here status')
         status = self.__pyaip.getStatus()
         logging.info(f"{status:08x}")   
     
@@ -138,68 +149,27 @@ class convolution:
         self.__pyaip.finish()           
         
 if __name__=="__main__":
-    logging.basicConfig(level=logging.INFO)
+    import sys, random, time, os
+    logging.basicConfig(level=logging.DEBUG)
 
     aip_mem_size = 8
+    size_mem_y   = 5
     connector = '/dev/ttyACM0'
     nic_addr = 1
     port = 0
     csv_file = '/home/pablo/convo_core/ID1000500B_config.csv'
-    
+    convolutioner = 0
+
     try:       
         convolutioner = convolution(connector, nic_addr, port, csv_file)
-        convolutioner.reset()
+        ##convolutioner.reset()
     except:
         e = sys.exc_info()
         print('ERROR: ', e)
     
     #==========================================
-
-    memY = [random.randrange(2 ** 32) for i in range(0, aip_mem_size)]
+    random.seed(64)
+    memY = [random.randrange(2 ** 8) for i in range(0, size_mem_y)]
     memZ = convolutioner.conv(memY)
     convolutioner.finish()
     logging.info("DONE!")
-
-    # ID = convolutioner.getID()
-    # print(f'Read ID: {ID:08X}\n')
-    
-    
-    # sizeY = [0x00000005]
-    # print('Write configuration register: CONFREG')
-    # convolutioner.writeConfReg('CONFREG', sizeY, 1, 0)
-    # print(f'sizeY Data: {[f"{x:08X}" for x in sizeY]}\n')
-    
-    # memY = [random.randrange(2 ** 32) for i in range(0, aip_mem_size)]
-    # convolutioner.writeData(memY)
-   
-    
-
-    # memY = [0x00000000, 0x00000001, 0x00000002, 0x00000003, 0x00000004]
-
-    # print('Write memory: MEM_Y')
-    # convolutioner.writeMem('MEM_Y', memY, 5, 0)
-    # print(f'memY Data: {[f"{x:08X}" for x in memY]}\n')
-
-    # print('Start IP\n')
-    # convolutioner.start()
-
-    # STATUS = convolutioner.getStatus()
-    # print(f'Read STATUS: {STATUS:08X}\n')
-
-    # print('Read memory: MEM_Z')
-    # result = convolutioner.readMem('MEM_Z', 63, 0)
-    # print(f'result Data: {[f"{x:08X}" for x in result]}\n')
-
-    # print('Clear INT: 0')
-    # convolutioner.clearINT(0)
-
-    # STATUS = convolutioner.getStatus()
-    # print(f'Read STATUS: {STATUS:08X}\n')
-
-    #==========================================
-
-    # convolutioner.finish()
-
-
-    # convolutioner.finish()
-        
