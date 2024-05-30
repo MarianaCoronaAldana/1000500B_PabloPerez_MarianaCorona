@@ -14,7 +14,7 @@ class convolution:
         ## Pyaip object
         self.__pyaip = pyaip_init(connector, nic_addr, port, csv_file)
         if self.__pyaip is None:
-            logging.debug(error)
+            logging.debug("error")
         ## Array of strings with information read
         self.__pyaip.reset()
         self.dataRX = []
@@ -30,7 +30,7 @@ class convolution:
     # @param Y    Array of data to put in memory Y
     def conv(self, memY):          
         # Enable interruptions
-        self.__enableINT()
+        # self.__enableINT()
         # Write Conf Reg with size of memory Y
         self.__writeSizeY(len(memY))
         # Write memory: MEM_Y
@@ -168,8 +168,53 @@ if __name__=="__main__":
         print('ERROR: ', e)
     
     #==========================================
-    random.seed(64)
-    memY = [random.randrange(2 ** 8) for i in range(0, size_mem_y)]
+    #random.seed(64)
+    #memY = [random.randrange(2 ** 8) for i in range(0, size_mem_y)]
+    memY = [ 0, 1, 2, 3, 4]
     memZ = convolutioner.conv(memY)
     convolutioner.finish()
     logging.info("DONE!")
+
+    # ID = convolutioner.getID()
+    # print(f'Read ID: {ID:08X}\n')
+    
+    
+    # sizeY = [0x00000005]
+    # print('Write configuration register: CONFREG')
+    # convolutioner.writeConfReg('CONFREG', sizeY, 1, 0)
+    # print(f'sizeY Data: {[f"{x:08X}" for x in sizeY]}\n')
+    
+    # memY = [random.randrange(2 ** 32) for i in range(0, aip_mem_size)]
+    # convolutioner.writeData(memY)
+   
+    
+
+    # memY = [0x00000000, 0x00000001, 0x00000002, 0x00000003, 0x00000004]
+
+    # print('Write memory: MEM_Y')
+    # convolutioner.writeMem('MEM_Y', memY, 5, 0)
+    # print(f'memY Data: {[f"{x:08X}" for x in memY]}\n')
+
+    # print('Start IP\n')
+    # convolutioner.start()
+
+    # STATUS = convolutioner.getStatus()
+    # print(f'Read STATUS: {STATUS:08X}\n')
+
+    # print('Read memory: MEM_Z')
+    # result = convolutioner.readMem('MEM_Z', 63, 0)
+    # print(f'result Data: {[f"{x:08X}" for x in result]}\n')
+
+    # print('Clear INT: 0')
+    # convolutioner.clearINT(0)
+
+    # STATUS = convolutioner.getStatus()
+    # print(f'Read STATUS: {STATUS:08X}\n')
+
+    #==========================================
+
+    # convolutioner.finish()
+
+
+    # convolutioner.finish()
+        

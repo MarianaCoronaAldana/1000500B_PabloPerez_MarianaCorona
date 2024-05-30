@@ -11,7 +11,7 @@
 
 /* PRIVATES */
 static int32_t check_if_valid_size(uint8_t sizeX);
-static void set_parameters(int32_t *X, uint8_t sizeX);
+static void set_parameters(uint8_t *X, uint8_t sizeX);
 static void run_convolution(void);
 static void read_result(uint16_t *result);
 static void stop_core(void);
@@ -19,7 +19,7 @@ static void stop_core(void);
 
 uint32_t conv(uint8_t *X, uint8_t sizeX, uint16_t *result){
     
-    int32_t *dataX = (int32_t*) X;
+    //int32_t *dataX = (int32_t*) X;
 
     if(SUCCESS != check_if_valid_size(sizeX)){
         printf("\ninvalid size");
@@ -27,7 +27,7 @@ uint32_t conv(uint8_t *X, uint8_t sizeX, uint16_t *result){
     }
     
     //begin the writing of the input data
-    set_parameters(dataX,sizeX);
+    set_parameters(X,sizeX);
     printf("Size of Y: is %08X\n ", sizeX);
     run_convolution();
     read_result(result);
@@ -49,10 +49,18 @@ int32_t check_if_valid_size(uint8_t sizeX){
     
 }
 
-void set_parameters(int32_t *X, uint8_t sizeX){
+static void set_parameters(uint8_t *X, uint8_t sizeX){
     
+    uint32_t sizeX_32b      = (uint32_t) sizeX;
+    uint32_t dataX_32b[32];
+
+    /* Lets initialize the 32 bit data long array with X values */
+    for(int i = 0; i < sizeX_32b; i++){
+        dataX_32b[i] = X[i];
+    }
+
     id1000500b_writeConfReg(sizeX);
-    id1000500b_writeData(X,sizeX);
+    id1000500b_writeData(dataX_32b,sizeX);
     
 }
 
@@ -66,16 +74,17 @@ void run_convolution(void){
 }
 
 void read_result(uint16_t *result){
-    uint32_t *temp_result = (uint32_t*) result;
-    id1000500b_readData(temp_result,AMOUNT_RESULT_MAX);
+    
+    uint32_t result_32b[AMOUNT_RESULT_MAX] = {0};
 
-    // print the result
-    printf("\nresult Data: [");
+    id1000500b_readData(result_32b,AMOUNT_RESULT_MAX);
+
+    //give the calculated values to the output
     for(int i=0; i<AMOUNT_RESULT_MAX; i++){
-        printf("0x%08X", temp_result[i]);
-        if(i != AMOUNT_RESULT_MAX-1){
-            printf("\n, ");
-        }
+        
+        /* give original array the values calculated */    
+        result[i] = result_32b[i];
+              
     }
     printf("]\n\n");
 

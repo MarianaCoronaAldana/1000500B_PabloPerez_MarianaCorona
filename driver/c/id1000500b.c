@@ -123,7 +123,7 @@ int32_t id1000500b_waitINT(void)
         sleep(0.1); // segs
         #endif
     }
-
+    printf("\nDONE FLAG HIGH!\n");
     id1000500b_aip->clearINT(INT_DONE);
 
     return 0;

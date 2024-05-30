@@ -24,8 +24,9 @@ int main(void)
     uint8_t port = 0;
 
     // convolution process
-    uint8_t sizeX = 5;
+    
     uint8_t dataX[SIZE_X] = {0x00, 0x01, 0x02, 0x03, 0x04};
+    uint8_t sizeX = sizeof(dataX)/sizeof(dataX)[0];
     uint16_t result[AMOUNT_RESULT_MAX] = {0};
 /***************************************************************************/
 
@@ -43,23 +44,13 @@ int main(void)
     for(int i=0; i<AMOUNT_RESULT_MAX; i++){
         printf("0x%08X", result[i]);
         if(i != AMOUNT_RESULT_MAX-1){
-            printf("\n, ");
+            printf(" , ");
         }
     }
     printf("]\n\n");
 
     // call the task to be executed
     conv(dataX, sizeX, result);
-
-    // print the result
-    // printf("\nresult Data: [");
-    // for(int i=0; i<AMOUNT_RESULT_MAX; i++){
-    //     printf("0x%08X", result[i]);
-    //     if(i != AMOUNT_RESULT_MAX-1){
-    //         printf("\n, ");
-    //     }
-    // }
-    // printf("]\n\n");
 
     printf("\n\nPress key to close ... ");
     return SUCCESS;
